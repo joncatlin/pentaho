@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  pentaho-db:
+    image: postgres:10-alpine
+    environment:
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_USER: pentaho_user
+      POSTGRES_DB: pentaho_db
+    networks:
+      - pentaho
+
+  pentaho-di:
+    image: joncatlin/pentaho-di
+    environment:
+      PGHOST: pentaho-db
+      PGPORT: 5432
+      PGDATABASE: pentaho_db
+      PGUSER: pentaho_user
+      PGPASSWORD: changeme
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./input:/input
+      - ./output:/output
+      - ./processed:/processed
+    networks:
+      - pentaho
+
+networks:
+  pentaho:
